@@ -8,7 +8,8 @@ DADAM adalah situs web interaktif untuk membantu masyarakat dan pemerintah memah
 - **Dashboard Ekonomi** menyajikan PDRB menurut lapangan usaha atau pengeluaran, analisis tenaga kerja, produktivitas, dan sektor dengan pangsa terbesar.
 - **Tahun referensi** mengikuti tahun data terbaru secara otomatis dan dapat dipilih untuk seluruh analisis.
 - **Unduhan data** menyediakan data dalam format CSV beserta metadata.
-- **Akun pengguna dan admin** membatasi pengelolaan data dan pengguna sesuai peran.
+- **Akses publik** memungkinkan siapa saja membuka dashboard dan mengunduh data tanpa mendaftar atau masuk.
+- **Mode admin** tetap memerlukan login admin untuk mengunggah data dan mengelola akun.
 - **Pembaruan data oleh admin** menerima berkas JSON atau XLSX untuk data dashboard, tenaga kerja, dan demografi.
 
 ## Teknologi
@@ -54,14 +55,16 @@ Buka `http://localhost:3000` di peramban.
 4. Isi variabel `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, dan `NEXT_PUBLIC_FIREBASE_APP_ID` pada `.env.local`.
 5. Pastikan ID proyek Firebase Admin SDK sama dengan `NEXT_PUBLIC_FIREBASE_PROJECT_ID`.
 6. Untuk lokal, simpan berkas JSON akun layanan di luar repositori dan arahkan `GOOGLE_APPLICATION_CREDENTIALS` ke lokasinya. Untuk Vercel, masukkan seluruh isi JSON ke variabel server-only `FIREBASE_SERVICE_ACCOUNT_JSON`. Pastikan project ID sama dengan Firebase Web dan jangan pernah mengunggah kunci ke GitHub.
+7. Atur `NEXT_PUBLIC_DASHBOARD_ACCESS_MODE=public` untuk membuka dashboard tanpa login. Variabel ini bukan rahasia dan dapat diisi di `.env.local` atau konfigurasi Vercel.
 
 Berkas `.env.local` diabaikan oleh Git. Jangan menghapus aturan tersebut atau memasukkan nilai rahasia ke berkas yang dilacak Git.
 
-## Akun dan hak akses
+## Akses publik dan hak admin
 
-- Pengguna baru memperoleh peran `user` dan harus memverifikasi alamat email sebelum masuk.
-- Peran yang tersedia adalah `user` dan `admin`. Peran admin dikelola di sisi server melalui dokumen `users/{uid}` di Firestore; formulir dari peramban tidak dapat menetapkan peran admin.
-- Admin dapat mengelola data dashboard dan akun pengguna. Pengguna dapat melihat dashboard serta mengunduh data dan metadata.
+- Pada mode `public` (mode bawaan), halaman Dashboard Ringkasan, Dashboard Ekonomi, dan Download Data dapat dibuka tanpa akun. Formulir pendaftaran disembunyikan dan endpoint pendaftaran menolak permintaan baru.
+- Login di mode `public` hanya menerima akun dengan peran `admin`. Akun biasa tidak memperoleh sesi aplikasi. Akses unggah/perbarui data, pengelolaan pengguna, dan halaman admin tetap dilindungi pemeriksaan role di server.
+- Profil Firebase disimpan pada dokumen `users/{uid}` di Firestore. Peran admin hanya ditetapkan dan dikelola di sisi server; formulir dari peramban tidak dapat menetapkan peran admin.
+- Untuk mengaktifkan kembali pendaftaran dan login bagi semua pengguna, ubah `NEXT_PUBLIC_DASHBOARD_ACCESS_MODE` menjadi `authenticated`, lalu buat deployment baru. Dalam mode ini dashboard dan unduhan kembali memerlukan login, tab pendaftaran di `/auth` tersedia, dan akun baru memperoleh peran `user`. Akun tetap harus memverifikasi email sebelum masuk.
 - Keluar dari semua perangkat mencabut token penyegaran Firebase agar sesi lama tidak dapat digunakan kembali.
 - Saat akun Firebase pertama kali ditautkan ke profil lama dengan alamat email yang sama, nama dan peran lama disalin ke profil Firebase. Profil lama ditandai telah dipindahkan dan hash kata sandi lamanya dihapus.
 
@@ -73,7 +76,7 @@ Admin dapat membuka **Kelola data dashboard** melalui menu akun atau tombol admi
 - Data tenaga kerja diperbarui melalui formulir khusus tenaga kerja dengan berkas JSON atau XLSX.
 - Data demografi menerima JSON atau XLSX. Sistem memperbarui atribut pada peta kecamatan yang sudah ada; unggahan tidak perlu berisi ulang geometri. Data demografi untuk tahun yang diunggah harus mencakup seluruh 24 kecamatan.
 - Untuk pembaruan peta, kolom masukan mencakup nama kecamatan `nmkec`, tahun `periode`, jumlah penduduk `Jumlah_Pen`, laju pertumbuhan `Laju_Pertu`, persentase penduduk `Persentase`, kepadatan `Kepadata_`, dan rasio jenis kelamin `Rasio_Jeni`.
-- Data dashboard disimpan pada koleksi `dashboardData/{year}` di Firestore dan dibaca melalui endpoint server yang memeriksa sesi pengguna.
+- Data dashboard disimpan pada koleksi `dashboardData/{year}` di Firestore dan dibaca melalui endpoint server. Endpoint baca bersifat publik pada mode `public`; endpoint tulis tetap memeriksa sesi dan role admin.
 
 ## Perintah proyek
 

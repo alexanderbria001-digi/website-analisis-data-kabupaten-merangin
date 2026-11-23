@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { firestore } from "@/lib/firebase-admin";
 import { TENAGA_KERJA_HEADERS } from "@/types/tenagakerja";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const user = await getCurrentUser();
-  if (!user) {
+  if (isAuthenticatedMode() && !(await getCurrentUser())) {
     return NextResponse.json({ message: "Silakan masuk." }, { status: 401 });
   }
 

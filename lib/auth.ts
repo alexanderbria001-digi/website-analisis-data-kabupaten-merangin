@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { FieldValue } from "firebase-admin/firestore";
 import { firebaseAuth, firestore } from "@/lib/firebase-admin";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 export const SESSION_COOKIE_NAME = "dadam_session";
 export const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7;
@@ -157,6 +158,8 @@ export async function getCurrentUser(): Promise<AppUser | null> {
       return null;
     }
 
+    if (!isAuthenticatedMode() && user.role !== "admin") return null;
+
     return {
       uid: userSnapshot.id,
       name: user.name,
@@ -168,9 +171,9 @@ export async function getCurrentUser(): Promise<AppUser | null> {
   }
 }
 
-export async function requireUser() {
+export async function getDashboardUser(): Promise<AppUser | null> {
   const user = await getCurrentUser();
-  if (!user) redirect("/auth");
+  if (isAuthenticatedMode() && !user) redirect("/auth");
   return user;
 }
 

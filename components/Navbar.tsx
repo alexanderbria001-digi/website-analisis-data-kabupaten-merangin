@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import ThemeToggler from "./ui/ThemeToggler";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 const navItems = [
   { href: "/summary", label: "Dashboard Ringkasan" },
@@ -70,7 +71,7 @@ const Navbar = ({ currentPath = "/" }: { currentPath?: string }) => {
       const response = await fetch("/api/auth/logout", { method: "POST" });
       if (!response.ok) return;
       setUser(null);
-      router.replace("/auth");
+      router.replace("/summary");
       router.refresh();
     } catch {
       // Keep the current UI state if the session could not be cleared.
@@ -87,7 +88,7 @@ const Navbar = ({ currentPath = "/" }: { currentPath?: string }) => {
       if (response.ok || result?.currentDeviceSignedOut) {
         setUser(null);
         setIsAllSessionDialogOpen(false);
-        router.replace("/auth");
+        router.replace("/summary");
         router.refresh();
       }
 
@@ -102,7 +103,7 @@ const Navbar = ({ currentPath = "/" }: { currentPath?: string }) => {
         if (response.ok) {
           setUser(null);
           setIsAllSessionDialogOpen(false);
-          router.replace("/auth");
+          router.replace("/summary");
           router.refresh();
         }
       } catch {
@@ -211,7 +212,7 @@ const Navbar = ({ currentPath = "/" }: { currentPath?: string }) => {
                 </>
               ) : (
                 <DropdownMenuItem asChild>
-                  <Link href="/auth">Masuk / Daftar</Link>
+                  <Link href="/auth">{isAuthenticatedMode() ? "Masuk / Daftar" : "Masuk admin"}</Link>
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

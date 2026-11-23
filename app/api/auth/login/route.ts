@@ -6,6 +6,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_DURATION_SECONDS,
 } from "@/lib/auth";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 export const runtime = "nodejs";
 
@@ -43,6 +44,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const session = await createAuthenticatedSession(parsed.data.idToken);
+    if (!isAuthenticatedMode() && session.user.role !== "admin") {
+      return NextResponse.json({ message: "Login hanya tersedia untuk admin." }, { status: 403 });
+    }
+
     const response = NextResponse.json({ user: session.user });
     response.cookies.set(SESSION_COOKIE_NAME, session.sessionCookie, {
       httpOnly: true,

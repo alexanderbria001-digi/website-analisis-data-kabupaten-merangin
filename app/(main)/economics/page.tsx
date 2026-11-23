@@ -1,13 +1,13 @@
 import AnalyticsStat from "@/components/economics/AnalyticsStatEco";
 import AdminDashboardDataLink from "@/components/admin/AdminDashboardDataLink";
-import { requireUser } from "@/lib/auth";
+import { getDashboardUser } from "@/lib/auth";
 
 const EconomicsPage = async () => {
-    const user = await requireUser();
+    const user = await getDashboardUser();
 
     return(
         <>
-            {user.role === "admin" && <AdminDashboardDataLink />}
+            {user?.role === "admin" && <AdminDashboardDataLink />}
             <AnalyticsStat />
         </>
     );

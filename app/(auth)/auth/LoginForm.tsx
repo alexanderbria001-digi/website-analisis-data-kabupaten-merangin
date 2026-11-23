@@ -25,7 +25,7 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Kata sandi wajib diisi.' }),
 });
 
-const LoginForm = () => {
+const LoginForm = ({ adminOnly = false }: { adminOnly?: boolean }) => {
     const router = useRouter();
     const [serverError, setServerError] = useState<string | null>(null);
 
@@ -89,9 +89,11 @@ const LoginForm = () => {
     <>
         <Card>
             <CardHeader>
-                <CardTitle>Login</CardTitle>
+                <CardTitle>{adminOnly ? 'Login Admin' : 'Login'}</CardTitle>
                 <CardDescription>
-                    Masuk untuk membuka dashboard analisis Merangin.
+                    {adminOnly
+                      ? 'Masuk dengan akun administrator untuk mengelola dashboard.'
+                      : 'Masuk untuk membuka dashboard analisis Merangin.'}
                 </CardDescription>
                 <CardContent className='space-y-2'>
                     <Form {...form}>

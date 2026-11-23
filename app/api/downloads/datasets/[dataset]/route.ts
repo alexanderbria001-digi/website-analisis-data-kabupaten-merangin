@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { DOWNLOAD_COLUMN_METADATA, DOWNLOAD_DATASETS } from "@/lib/download-catalog";
 import { getDashboardDatasetRows } from "@/lib/download-data";
 import type { DownloadDatasetId } from "@/types/downloads";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,8 +24,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ dataset: string }> },
 ) {
-  const user = await getCurrentUser();
-  if (!user) {
+  if (isAuthenticatedMode() && !(await getCurrentUser())) {
     return NextResponse.json({ message: "Silakan masuk." }, { status: 401 });
   }
 

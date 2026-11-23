@@ -6,6 +6,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_DURATION_SECONDS,
 } from "@/lib/auth";
+import { isAuthenticatedMode } from "@/lib/access-mode";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,13 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  if (!isAuthenticatedMode()) {
+    return NextResponse.json(
+      { message: "Pendaftaran akun pengguna sedang dinonaktifkan." },
+      { status: 403 },
+    );
+  }
+
   if (!isSameOriginRequest(request)) {
     return NextResponse.json({ message: "Permintaan tidak valid." }, { status: 403 });
   }

@@ -298,7 +298,7 @@ export default function DownloadDataClient({
   datasets,
   files,
 }: {
-  role: UserRole;
+  role: UserRole | null;
   datasets: DownloadDatasetSummary[];
   files: UploadedDownloadFile[];
 }) {
@@ -319,7 +319,7 @@ export default function DownloadDataClient({
           </div>
           <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${isAdmin ? "border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-200" : "border-sky-200 bg-white/80 text-sky-800 dark:border-sky-800 dark:bg-slate-900/70 dark:text-sky-200"}`}>
             {isAdmin ? <ShieldCheck aria-hidden="true" className="size-4" /> : <Database aria-hidden="true" className="size-4" />}
-            {isAdmin ? "Mode admin" : "Akses pengguna"}
+            {isAdmin ? "Mode admin" : role === "user" ? "Akses pengguna" : "Akses publik"}
           </span>
         </div>
       </header>
