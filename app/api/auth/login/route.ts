@@ -54,6 +54,15 @@ export async function POST(request: NextRequest) {
     response.headers.set("Cache-Control", "no-store");
     return response;
   } catch (error) {
+    const details = error instanceof Error ? error : new Error(String(error));
+    const code = typeof error === "object" && error !== null && "code" in error
+      ? String(error.code)
+      : "";
+    console.error("[api/auth/login] Session creation failed", {
+      name: details.name,
+      code,
+      message: details.message,
+    });
     return getFailureResponse(error);
   }
 }

@@ -53,7 +53,7 @@ Buka `http://localhost:3000` di peramban.
 3. Tambahkan `localhost` dan nama domain produksi ke daftar domain yang diizinkan pada Firebase Authentication.
 4. Isi variabel `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, dan `NEXT_PUBLIC_FIREBASE_APP_ID` pada `.env.local`.
 5. Pastikan ID proyek Firebase Admin SDK sama dengan `NEXT_PUBLIC_FIREBASE_PROJECT_ID`.
-6. Simpan berkas JSON akun layanan Firebase Admin SDK di luar repositori, lalu arahkan `GOOGLE_APPLICATION_CREDENTIALS` ke lokasi berkas tersebut. Jangan unggah kunci akun layanan ke GitHub.
+6. Untuk lokal, simpan berkas JSON akun layanan di luar repositori dan arahkan `GOOGLE_APPLICATION_CREDENTIALS` ke lokasinya. Untuk Vercel, masukkan seluruh isi JSON ke variabel server-only `FIREBASE_SERVICE_ACCOUNT_JSON`. Pastikan project ID sama dengan Firebase Web dan jangan pernah mengunggah kunci ke GitHub.
 
 Berkas `.env.local` diabaikan oleh Git. Jangan menghapus aturan tersebut atau memasukkan nilai rahasia ke berkas yang dilacak Git.
 
