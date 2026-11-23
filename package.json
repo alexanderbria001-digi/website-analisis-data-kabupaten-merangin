@@ -49,6 +49,9 @@
     "@firebase/app-compat": "0.5.18",
     "@grpc/grpc-js": "1.14.7",
     "glob": "14.0.4",
+    "jwks-rsa": {
+      "jose": "4.15.9"
+    },
     "minimatch": "11.0.5",
     "rimraf": "6.1.4"
   },
